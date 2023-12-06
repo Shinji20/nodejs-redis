@@ -5,7 +5,7 @@ const redis = require("redis");
 
 const client = redis.createClient({
   host: "127.0.0.1",
-  port: 6479,
+  port: 6379,
 });
 
 const app = express();
@@ -15,8 +15,8 @@ app.use(responseTime());
 app.get("/character", async (req, res) => {
   const response = await axios.get("https://rickandmortyapi.com/api/character");
 
-  client.set("character", JSON.stringify(response.data), (err, reply) => {
-    if (err) console.error(err);
+  client.set("characters", JSON.stringify(response.data), (err, reply) => {
+    if (err) console.log(err);
 
     console.log(reply);
 
