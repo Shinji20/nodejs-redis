@@ -1,0 +1,28 @@
+const express = require("express");
+const axios = require("axios");
+const responseTime = require("response-time");
+const redis = require("redis");
+
+const client = redis.createClient({
+  host: "127.0.0.1",
+  port: 6479,
+});
+
+const app = express();
+
+app.use(responseTime());
+
+app.get("/character", async (req, res) => {
+  const response = await axios.get("https://rickandmortyapi.com/api/character");
+
+  client.set("character", JSON.stringify(response.data), (err, reply) => {
+    if (err) console.error(err);
+
+    console.log(reply);
+
+    res.json(response.data);
+  });
+});
+
+app.listen(3000);
+console.log("server listening on port 3000");
